@@ -94,6 +94,144 @@ class ModelMetaclass(type):
 		attrs['__update__'] = 'update `%s` set %s where `%s` = ?' % (tableName, ', '.join(map(lambda f: '`%s` = ?' % (mappings.get(f).name or f), fields)), primaryKey)
 		attrs['__delete__'] = 'delete from `%s` where `%s` = ?' % (tableName, primaryKey)
 		attrs['__insert__'] = 'values (%s) % (tableName, ','.join(escaped_fields), primaryKey, create_args_string(len(escape_fields) + 1))
+		return type.__new__(cls, name, bases, attrs)
+		
+def create_args_string(num):
+	L = []
+	for n in range(num):
+		L.append('?')
+	return ','.join(L)
+	
+	
+class Model(dict,metaclass = ModelMetaclass):
+	def __init__(self, **kw):
+		super(Model, self).__init__(**kw)
+		
+		
+	def __getattr__(self, key):
+		try:
+			return self[key]
+		except KeyError:
+			raise AttributeError(
+				r "'Model' object has no attribute '%s'" %key)
+	
+	def __setattr__(self, key, value):
+		self[key] = value
+		
+	def getValue(self, key):
+		return getattr(self, key, None)
+		
+	def getValueOrDefault(self, key):
+		value getattr(self, key, None)
+		if value is None:
+			field = self.__mappings__[key]
+			if field.default is not None:
+				value = field.default() if callable(field.default) else field.default
+				logging.debug('using default value for %s:%s' % (key, str(value)))
+				setattr(self, key, value)
+			return value
+			
+			
+# ------------------------------
+
+	@classmethod
+	@asyncio.coroutine
+	def findAll(cls, where = None, args = None, **kw):
+		sql = [cls.__select__]
+		if where:
+			sql.append('where')
+			sql.append(where)
+		if args is None:
+			args = []
+		
+		orderBy = kw.get('orderBy', None)
+		if orderBy:
+			sql.append('order by')
+			sql.append(orderBy)
+			
+		limit = kw.get('limit', None)
+		if limit is not None:
+			sql.append('limit')
+			if isinstance(limit, int):
+				sql.append('?')
+				args.append(limit)
+			elif isinstance(limit, tuple) and len(limit) == 2:
+				sql.append('?,?')
+				args.extend(limit)
+			else:
+				raise ValueError('Invalid limit value:%s' %s str(limit))
+		
+		rs = yield from select(' '.join(sql), args)
+		return [cls(**r) for r in rs]
+		
+	@classmethod
+	@asyncio.coroutine
+	def findNumber(cls, selectField, where = None, args = None):
+		sql = ['select %s _num_ from `%s`' %s (selectField, cls.__table__)]
+		if where:
+			sql.append('where')
+			sql.append(where)
+		rs = yield from select(' '.join(sql), args, 1)
+		
+			
+			
+			
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
 		
 		
 						
