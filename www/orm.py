@@ -19,7 +19,7 @@ def create_pool(loop, **kw):
 		)
 		
 		
-@asyncio.coroutine
+@asyncio.coroutine	
 def select(sql, args, size = None):
 	log(sql, args)
 	global __pool
@@ -90,7 +90,11 @@ class ModelMetaclass(type):
 		attrs['__table__'] = tableName
 		attrs['__primary_key__'] = primaryKey
 		attrs['__fields__'] = fields 
-		attrs['__select__'] = "select '%s' ,%s from '%s'" % (primaryKey, ','.join(escaped_fields), tableName)
+		attrs['__select__'] = "select `%s`, %s from `%s`" % (primaryKey, ','.join(escaped_fields), tableName)
+		attrs['__update__'] = 'update `%s` set %s where `%s` = ?' % (tableName, ', '.join(map(lambda f: '`%s` = ?' % (mappings.get(f).name or f), fields)), primaryKey)
+		attrs['__delete__'] = 'delete from `%s` where `%s` = ?' % (tableName, primaryKey)
+		attrs['__insert__'] = 'values (%s) % (tableName, ','.join(escaped_fields), primaryKey, create_args_string(len(escape_fields) + 1))
+		
 		
 						
 		
