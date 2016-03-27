@@ -3,12 +3,12 @@ import logging
 import asyncio
 import pdb
 
-@asyncio coroutine
+@asyncio.coroutine
 def create_pool(loop, **kw):
 	global __pool
 	__pool = yield from aiomysql.create_pool(
 		host = kw.get('host', 'localhost'),
-		port = kw.get('port', '3306),
+		port = kw.get('port', '3306'),
 		user = kw['user'],
 		db = kw['database'],
 		charset = kw.get('charset', 'utf8'),
@@ -30,7 +30,7 @@ def select(sql, args, size = None):
 		if size:
 			rs = yield from cur.fetchmany(size)
 		else:
-			rs = yield from cur,fetchall()
+			rs = yield from cur.fetchall()
 		yield from cur.close()
 		logging.info('rows returned:%s' % len(rs))
 		return rs
@@ -93,7 +93,7 @@ class ModelMetaclass(type):
 		attrs['__select__'] = "select `%s`, %s from `%s`" % (primaryKey, ','.join(escaped_fields), tableName)
 		attrs['__update__'] = 'update `%s` set %s where `%s` = ?' % (tableName, ', '.join(map(lambda f: '`%s` = ?' % (mappings.get(f).name or f), fields)), primaryKey)
 		attrs['__delete__'] = 'delete from `%s` where `%s` = ?' % (tableName, primaryKey)
-		attrs['__insert__'] = 'values (%s) % (tableName, ','.join(escaped_fields), primaryKey, create_args_string(len(escape_fields) + 1))
+		attrs['__insert__'] = 'insert into `%s` (%s, `%s`) values (%s)' % (tableName , ','.join(escaped_fields), primaryKey, create_args_string(len(escape_fields) + 1))
 		return type.__new__(cls, name, bases, attrs)
 		
 def create_args_string(num):
@@ -113,7 +113,7 @@ class Model(dict,metaclass = ModelMetaclass):
 			return self[key]
 		except KeyError:
 			raise AttributeError(
-				r "'Model' object has no attribute '%s'" %key)
+				r"'Model' object has no attribute '%s'" % key)
 	
 	def __setattr__(self, key, value):
 		self[key] = value
@@ -122,7 +122,7 @@ class Model(dict,metaclass = ModelMetaclass):
 		return getattr(self, key, None)
 		
 	def getValueOrDefault(self, key):
-		value getattr(self, key, None)
+		value = getattr(self, key, None)
 		if value is None:
 			field = self.__mappings__[key]
 			if field.default is not None:
@@ -159,7 +159,7 @@ class Model(dict,metaclass = ModelMetaclass):
 				sql.append('?,?')
 				args.extend(limit)
 			else:
-				raise ValueError('Invalid limit value:%s' %s str(limit))
+				raise ValueError('Invalid limit value:%s' % str(limit))
 		
 		rs = yield from select(' '.join(sql), args)
 		return [cls(**r) for r in rs]
@@ -172,7 +172,65 @@ class Model(dict,metaclass = ModelMetaclass):
 			sql.append('where')
 			sql.append(where)
 		rs = yield from select(' '.join(sql), args, 1)
+		if len(rs) == 0:
+			return None
+		return rs[0]['_num_']
 		
+	@classmethod
+	@asyncio.coroutine
+	def find(cls, pk):
+		rs = yield from select('%s where `%s` = ?' % (cls.__select__, cls.__primary_key__), [pk], 1)
+		if len(rs) == 0:
+			return None
+		return cls(**rs[0])
+	
+	@asyncio.coroutine
+	def save(self):
+		args = list(map(self.getValueOrDefault, self.__fields__))
+		args.append(self.getValueOrDefault(self.__primary_key__))
+		rows = yield from execute(self.__update__, args)
+		if rows != 1:
+			logging.warn(
+				'failed to update by primary key:affected rows: %s' % rows)
+	
+	@asyncio.coroutine
+	def remove(self):
+		args = [self.getValue(self.__primary_key__)]
+		rows = yield from execute(self.__delete__, args)
+		if rows != 1:
+			logging.warn('failed to remove by primary key:affected rows: %s' % rows)
+		
+		
+class Field(object):
+	def __init__(self, name, column_type, primary_key, default):
+		self.name = name
+		self.column_type = column_type
+		self.primary_key = primary_key
+		self.default = default
+		
+	def __str__(self):
+		return '<%s, %s:%s>' % (self.__class__.__name__, self.column_type, self.name)
+		
+		
+class StringField(Field):
+	def __init__(self, name = None, primary_key = False, default = None, ddl = 'varchar(100)'):
+		super().__init__(name, ddl, primary_key, default)
+		
+class BooleanField(Field):
+	def __init__(self, name = None, default = None,):
+		super().__init__(name, 'boolean', primary_key, default)
+
+class IntegerField(Field):
+	def __init__(self, name = None, primary_key = False, default = 0):
+		super().__init__(name, 'biginit', primary_key, default)
+
+class FloatField(Field):
+	def __init__(self, name = None, primary_key = False, default = 0.0):
+		super().__init__(name, 'real', primary_key, default)
+
+class TextField(Field):
+	def __init__(self, name = None, default = None):
+		super().__init__(name, 'text', False, default)		
 			
 			
 			
@@ -235,4 +293,32 @@ class Model(dict,metaclass = ModelMetaclass):
 		
 		
 						
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
 		
