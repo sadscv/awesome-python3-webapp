@@ -1,7 +1,7 @@
 db_config = {
     'user' : 'root',
     'password' : '',
-    'db' : ''
+    'db' : 'awesome'
 }
 
 
