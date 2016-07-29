@@ -54,7 +54,7 @@ async def get_blog(template, id):
 
 @get('/{template}/manage')
 def manage(template):
-    return 'redirect:/uk/manage/blogs',
+    return 'redirect:/uk/manage/blogs'
     # return 'redirect:/uk/manage/blogs' % (template)
 
 @get('/{template}/manage/{table}')

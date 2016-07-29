@@ -3,7 +3,7 @@ import os
 from aiohttp import web
 from jinja2 import Environment, FileSystemLoader
 
-from config import *
+from config import COOKIE_NAME, COOKIE_KEY
 from .frame import add_routes, add_static
 from .frame.orm import create_pool
 from .factorys import logger_factory, auth_factory, data_factory, response_factory, datetime_filter
@@ -41,7 +41,7 @@ async def create_server(loop, config_mod_name):
         logger_factory, auth_factory, data_factory, response_factory
     ])
     add_routes(app, 'app.route')
-    # add_routes(app, 'app.api')
+    add_routes(app, 'app.api')
     add_static(app)
     init_jinja2(app, filters=dict(datetime=datetime_filter), **config.jinja2_config)
     server = await loop.create_server(app.make_handler(), '127.0.0.1', 9900)

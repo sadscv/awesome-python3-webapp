@@ -25,7 +25,7 @@ def check_admin(request):
     if request.__user__ is None or not request.__user__.admin:
         return APIPermissionError
 
-def check_str(**kw):
+def check_string(**kw):
     for field, string in kw.items():
         if not string or not string.strip():
             raise APIValueError(field, '%s cannot be empty' % field)
