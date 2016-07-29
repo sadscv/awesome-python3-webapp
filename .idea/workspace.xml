@@ -2,13 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="c48145ab-61c4-490e-8c4a-93fe662fdc3e" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/www/app/api.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/www/app/__init__.py" afterPath="$PROJECT_DIR$/www/app/__init__.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/www/app/frame/halper.py" afterPath="$PROJECT_DIR$/www/app/frame/halper.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/www/app/route.py" afterPath="$PROJECT_DIR$/www/app/route.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/www/app/templates/bootstrap-base.html" afterPath="$PROJECT_DIR$/www/app/templates/bootstrap-base.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/www/app/templates/uk-base.html" afterPath="$PROJECT_DIR$/www/app/templates/uk-base.html" />
     </list>
     <ignored path="awesome-python3-webapp.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -573,7 +567,14 @@
       <option name="project" value="LOCAL" />
       <updated>1469452831774</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="add templates.">
+      <created>1469798260790</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1469798260790</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="ToolWindowManager">
