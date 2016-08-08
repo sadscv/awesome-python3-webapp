@@ -8,6 +8,8 @@ from urllib import parse
 from app import COOKIE_NAME
 from .models import User
 
+# it returns a new handler
+# a little bit different from the decorator.
 async  def logger_factory(app, handler):
     async def logger(request):
         logging.info('Response:%s %s' % (request.method, request.path))
@@ -16,7 +18,7 @@ async  def logger_factory(app, handler):
 
 async def auth_factory(app, handler):
     async def auth(request):
-        logging.info('check user: %s %s' % (request.method, request.path))
+        logging.info('auth_factory...check user: %s %s' % (request.method, request.path))
         request.__user__ = None
         cookie_str = request.cookies.get(COOKIE_NAME)
         if cookie_str:

@@ -103,10 +103,10 @@ async def api_update_blog(id, request, *, name, summary, content):
 
 @get('/api/blogs/{id}/comments')
 async def api_get_blog_comments(id):
-    comments = Comment.findAll('blog_id= ? ', [id], orderBy='created_at desc')
-    for c in comments:
-        c.content = markdown_highlight(c.content)
-        return dict(comments=comments)
+    comments =await Comment.findAll('blog_id= ? ', [id], orderBy='created_at desc')
+    # for c in comments:
+    #     c.content =await markdown_highlight(c.content)
+    return dict(comments=comments)
 
 @post('/api/blogs/{id}/comments')
 async def api_create_comment(id, request, *, content, time):

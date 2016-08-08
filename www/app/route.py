@@ -1,6 +1,8 @@
 from .frame import get
 from .frame.halper import Page, set_valid_value, markdown_highlight
 from .models import Blog
+
+#when a function import module, it will scan the whole module and pre-process functions in this module before it been actually used.
 @get('/test')
 async def test():
     return {

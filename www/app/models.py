@@ -82,6 +82,6 @@ class Comment(Model):
     user_id = StringField()
     user_name = StringField()
     user_image = StringField(ddl='varchar(500)')
-    cotent = TextField()
+    content = TextField()
     created_at = FloatField(default=time.time)
 

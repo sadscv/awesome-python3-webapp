@@ -3,7 +3,7 @@ import re
 from pygments import highlight
 from pygments.lexers import HtmlLexer, JavascriptLexer, Python3Lexer
 from pygments.formatters import HtmlFormatter
-# from .markdown2 import markdown
+from markdown2 import markdown
 from .errors import APIPermissionError, APIValueError
 
 class Page(object):

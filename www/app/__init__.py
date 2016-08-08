@@ -32,11 +32,16 @@ def init_jinja2(app, **kw):
 
 async def create_server(loop, config_mod_name):
     try:
+        # python　__import (module, fromlist).
+        # here fromlist is useless cuz when python import a module ,it will directly compile the whole module rather than
+        #the few functions listed in the 'fromlist'.
+        #fromlist make sense when you import a package instead of a  module
         config = __import__(config_mod_name, fromlist=['get config'])
     except ImportError as e:
         raise e
 
     await create_pool(loop, **config.db_config)
+    #a middleware factory is a kind of
     app = web.Application(loop=loop, middlewares=[
         logger_factory, auth_factory, data_factory, response_factory
     ])
