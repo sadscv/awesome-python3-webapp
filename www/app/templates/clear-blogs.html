@@ -1,10 +1,31 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends 'clear-base.html' %}
+{% block title %} 日志 {% endblock %}
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                {% for blog in blogs %}
+                <div class="post-preview">
+                    <a href="clear/blog/{{ blog.id }}">
+                        <h2 class="post-title">
+                            {{ blog.name }}
+                        </h2>
+                        <h3 class="post-subtitle">
+                            {{ blog.summary }}
+                        </h3>
+                    </a>
+                </div>
+                {% endfor %}
+                <hr>
+                <!-- pager -->
+                <ul class="pager">
+                    <li class="next">
+                        <a href="#">Older Posts &rarr;</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
 
-</body>
-</html>
+
+{% endblock %}
