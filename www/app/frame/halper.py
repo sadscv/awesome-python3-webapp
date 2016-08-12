@@ -23,7 +23,7 @@ def set_valid_value(num_str, value=1):
 
 def check_admin(request):
     if request.__user__ is None or not request.__user__.admin:
-        return APIPermissionError
+        raise APIPermissionError('permission denied')
 
 def check_string(**kw):
     for field, string in kw.items():
