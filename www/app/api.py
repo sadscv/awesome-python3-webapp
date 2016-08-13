@@ -4,6 +4,7 @@ import logging
 import re
 from aiohttp import web
 
+from .settings.UEditor_settings import settings
 from app import COOKIE_NAME
 from .frame import get, post
 from .frame.halper import Page, set_valid_value, check_admin, check_string, markdown_highlight
@@ -65,10 +66,21 @@ def signout(request):
     logging.info('user signed out')
     return r
 
+@get('/api/ueditor')
+async def ueditor_get(request):
+    for arg, value in request.__data__.items():
+        if (arg == 'action' and value == 'config'):
+             logging.info('#'*80)
+             return dict(settings)
+    return{
+        '__template__' : 'clear-base.html'
+    }
+
+
 @get('/api/{table}')
 async def api_get_items(table, *, page='1', size='10'):
     models = {'users': User, 'blogs': Blog, 'comments': Comment}
-    num = await models[table].countRows()
+    num = await models[table].countRows() if table in models else 0
     page = Page(num, set_valid_value(page), set_valid_value(size, 10))
     if num == 0:
         return dict(page=page, items=[])
@@ -140,7 +152,6 @@ async def api_delete_item(table, id, request):
             await c.remove()
 
     return dict(id=id)
-
 
 
 
