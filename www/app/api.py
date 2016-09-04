@@ -66,7 +66,7 @@ def signout(request):
     logging.info('user signed out')
     return r
 
-@get('/api/ueditor')
+@get('/api/ueditor/')
 async def ueditor_get(request):
     for arg, value in request.__data__.items():
         if (arg == 'action' and value == 'config'):

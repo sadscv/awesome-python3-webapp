@@ -1,18 +1,26 @@
-{% extends 'clear-base.html' %}
+<!DOCTYPE HTML>
+<html lang="en-US">
 
-{% block content %}
+  <head>
+    <meta charset="UTF-8">
+    <title>UEditor demo</title>
+    <style>
+      div#container {
+        height: 25em;
+      }
+    </style>
+  </head>
+
+  <body>
     <h1>UEditor demo</h1>
-    <!-- 加载编辑器的容器 -->
-    <form id="form" method="post">
-        <script type="text/plain" id="myEditor" name="myEditor" >
-            <p>welcome using UEditor </p>
+    <form action="/api/ueditor/" method="post">
+        <script id="container" name="content" type="text/plain">
+            init content
         </script>
-    <input type="submit" value="Form 内部可以直接提交">
 
     </form>
-    <script id="container" name="content" type="text/plain">
-     这里写你的初始化内容
-    </script>
+    <input type="submit" value="提交">
+
     <!-- 配置文件 -->
     <script type="text/javascript" src="../static/third_party/ueditor/ueditor.config.js"></script>
     <!-- 编辑器源码文件 -->
@@ -22,5 +30,6 @@
      var ue = UE.getEditor('container');
     </script>
 
+  </body>
 
-{% endblock %}
+</html>
